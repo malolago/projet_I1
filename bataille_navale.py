@@ -80,16 +80,29 @@ class BatailleNavale:
                 print("Placement impossible à cet endroit!")
     
     def initialiser_jeu(self):
-        print("=== PLACEMENT DE VOS NAVIRES ===\n")
+        # Joueur 1
+        print("=== JOUEUR 1 - PLACEMENT DE VOS NAVIRES ===\n")
         for nom, longueur in self.navires:
             self.afficher_grille(self.grille_joueur)
             print(f"\n{nom} (longueur {longueur})")
             self.placer_navire(self.grille_joueur, longueur)
             os.system('cls' if os.name == 'nt' else 'clear')
         
-        # Placement automatique des navires de l'ordinateur
+        print("\n✅ Joueur 1 : navires placés!")
+        input("\nJoueur 2, appuyez sur Entrée pour placer vos navires...")
+        os.system('cls' if os.name == 'nt' else 'clear')
+        
+        # Joueur 2
+        print("=== JOUEUR 2 - PLACEMENT DE VOS NAVIRES ===\n")
         for nom, longueur in self.navires:
-            self.placer_navire(self.grille_ordi, longueur, auto=True)
+            self.afficher_grille(self.grille_ordi)
+            print(f"\n{nom} (longueur {longueur})")
+            self.placer_navire(self.grille_ordi, longueur)
+            os.system('cls' if os.name == 'nt' else 'clear')
+        
+        print("\n✅ Joueur 2 : navires placés!")
+        input("\nAppuyez sur Entrée pour commencer la partie...")
+        os.system('cls' if os.name == 'nt' else 'clear')
     
     def tirer(self, grille, grille_tirs, x, y):
         if grille[x][y] == 'N':
