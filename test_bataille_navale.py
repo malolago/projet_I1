@@ -136,3 +136,37 @@ class TestTirs:
         assert jeu.tirer(grille, grille_tirs, 0, 1) == True
         # Troisième tir raté
         assert jeu.tirer(grille, grille_tirs, 0, 2) == False
+
+
+class TestFinPartie:
+    """Tests pour la détection de fin de partie"""
+    
+    def test_partie_non_terminee_avec_navires(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille[0][0] = 'N'
+        
+        assert jeu.partie_terminee(grille) == False
+    
+    def test_partie_terminee_sans_navires(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        assert jeu.partie_terminee(grille) == True
+    
+    def test_partie_terminee_avec_navires_coules(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille[0][0] = 'X'
+        grille[0][1] = 'X'
+        grille[0][2] = 'X'
+        
+        assert jeu.partie_terminee(grille) == True
+    
+    def test_partie_non_terminee_navires_partiellement_coules(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille[0][0] = 'X'
+        grille[0][1] = 'N'  # Un morceau de navire restant
+        
+        assert jeu.partie_terminee(grille) == False
