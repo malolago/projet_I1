@@ -90,3 +90,49 @@ class TestPlacementNavires:
         
         compte_navires = sum(ligne.count('N') for ligne in grille)
         assert compte_navires == 5
+
+
+class TestTirs:
+    """Tests pour la mécanique de tir"""
+    
+    def test_tir_touche(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille_tirs = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        # Placer un navire
+        grille[5][5] = 'N'
+        
+        # Tirer sur le navire
+        resultat = jeu.tirer(grille, grille_tirs, 5, 5)
+        
+        assert resultat == True
+        assert grille[5][5] == 'X'
+        assert grille_tirs[5][5] == 'X'
+    
+    def test_tir_rate(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille_tirs = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        # Tirer dans l'eau
+        resultat = jeu.tirer(grille, grille_tirs, 5, 5)
+        
+        assert resultat == False
+        assert grille_tirs[5][5] == 'O'
+    
+    def test_tirs_multiples(self):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille_tirs = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        # Placer des navires
+        grille[0][0] = 'N'
+        grille[0][1] = 'N'
+        
+        # Premier tir touché
+        assert jeu.tirer(grille, grille_tirs, 0, 0) == True
+        # Deuxième tir touché
+        assert jeu.tirer(grille, grille_tirs, 0, 1) == True
+        # Troisième tir raté
+        assert jeu.tirer(grille, grille_tirs, 0, 2) == False
