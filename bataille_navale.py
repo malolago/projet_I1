@@ -121,15 +121,31 @@ class BatailleNavale:
     
     def jouer(self):
         self.initialiser_jeu()
+        joueur_actuel = 1
         
         while True:
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("=== VOS TIRS ===")
-            self.afficher_grille(self.tirs_joueur)
-            print("\n=== VOS NAVIRES ===")
-            self.afficher_grille(self.grille_joueur)
             
-            # Tour du joueur
+            if joueur_actuel == 1:
+                print("=== TOUR DU JOUEUR 1 ===\n")
+                print("VOS TIRS (grille adversaire):")
+                self.afficher_grille(self.tirs_joueur)
+                print("\nVOS NAVIRES:")
+                self.afficher_grille(self.grille_joueur)
+                
+                grille_cible = self.grille_ordi
+                grille_tirs = self.tirs_joueur
+            else:
+                print("=== TOUR DU JOUEUR 2 ===\n")
+                print("VOS TIRS (grille adversaire):")
+                self.afficher_grille(self.tirs_ordi)
+                print("\nVOS NAVIRES:")
+                self.afficher_grille(self.grille_ordi)
+                
+                grille_cible = self.grille_joueur
+                grille_tirs = self.tirs_ordi
+            
+            # Tour du joueur actuel
             try:
                 x = int(input("\nVotre tir - Ligne (0-9): "))
                 y = int(input("Votre tir - Colonne (0-9): "))
@@ -139,20 +155,23 @@ class BatailleNavale:
                     input("Appuyez sur Entrée...")
                     continue
                 
-                if self.tirs_joueur[x][y] != ' ':
+                if grille_tirs[x][y] != ' ':
                     print("Vous avez déjà tiré ici!")
                     input("Appuyez sur Entrée...")
                     continue
                 
-                if self.tirer(self.grille_ordi, self.tirs_joueur, x, y):
+                if self.tirer(grille_cible, grille_tirs, x, y):
                     print("🎯 TOUCHÉ!")
                 else:
                     print("💦 À l'eau!")
                 
                 input("Appuyez sur Entrée...")
                 
-                if self.partie_terminee(self.grille_ordi):
-                    print("\n🎉 VICTOIRE! Vous avez coulé tous les navires ennemis!")
+                # Vérifier si le joueur actuel a gagné
+                if self.partie_terminee(grille_cible):
+                    os.system('cls' if os.name == 'nt' else 'clear')
+                    print(f"\n🎉 VICTOIRE DU JOUEUR {joueur_actuel}!")
+                    print("Tous les navires adverses ont été coulés!")
                     break
                 
             except ValueError:
@@ -160,23 +179,11 @@ class BatailleNavale:
                 input("Appuyez sur Entrée...")
                 continue
             
-            # Tour de l'ordinateur
-            while True:
-                x = random.randint(0, self.taille - 1)
-                y = random.randint(0, self.taille - 1)
-                if self.tirs_ordi[x][y] == ' ':
-                    break
-            
-            if self.tirer(self.grille_joueur, self.tirs_ordi, x, y):
-                print(f"💥 L'ennemi a touché votre navire en ({x}, {y})!")
-            else:
-                print(f"L'ennemi a tiré en ({x}, {y}) - raté!")
-            
-            input("Appuyez sur Entrée...")
-            
-            if self.partie_terminee(self.grille_joueur):
-                print("\n💀 DÉFAITE! Tous vos navires ont été coulés!")
-                break
+            # Changer de joueur
+            joueur_actuel = 2 if joueur_actuel == 1 else 1
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print(f"\nC'est au tour du Joueur {joueur_actuel}")
+            input("Appuyez sur Entrée quand vous êtes prêt...")
 
 # Lancer le jeu
 if __name__ == "__main__":
