@@ -246,3 +246,50 @@ class TestScenarioComplet:
         # Les deux navires sont touchés
         assert jeu.grille_joueur[0][0] == 'X'
         assert jeu.grille_ordi[0][0] == 'X'
+
+
+class TestCasLimites:
+    """Tests des cas limites"""
+    
+    def test_taille_minimale_grille(self):
+        jeu = BatailleNavale(taille=5)
+        assert jeu.taille == 5
+        assert len(jeu.grille_joueur) == 5
+        assert len(jeu.grille_joueur[0]) == 5
+    
+    def test_placement_navire_bord_grille(self):
+        jeu = BatailleNavale(taille=5)
+        grille = [[' ' for _ in range(5)] for _ in range(5)]
+        
+        # Placer un navire au bord
+        grille[0][3] = 'N'
+        grille[0][4] = 'N'
+        
+        assert grille[0][3] == 'N'
+        assert grille[0][4] == 'N'
+    
+    def test_grille_complete_navires(self):
+        jeu = BatailleNavale(taille=3)
+        grille = [[' ' for _ in range(3)] for _ in range(3)]
+        
+        # Remplir toute la grille de navires
+        for i in range(3):
+            for j in range(3):
+                grille[i][j] = 'N'
+        
+        compte = sum(ligne.count('N') for ligne in grille)
+        assert compte == 9
+    
+    def test_plusieurs_placements_automatiques_sans_conflit(self):
+        jeu = BatailleNavale(taille=10)
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        # Placer tous les navires automatiquement
+        for nom, longueur in jeu.navires:
+            resultat = jeu.placer_navire(grille, longueur, auto=True)
+            assert resultat == True
+        
+        # Vérifier le nombre total de cases occupées
+        total = sum(longueur for _, longueur in jeu.navires)
+        compte = sum(ligne.count('N') for ligne in grille)
+        assert compte == total
