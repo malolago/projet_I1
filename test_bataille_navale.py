@@ -209,3 +209,40 @@ class TestAffichageGrille:
         # Vérifier qu'il n'y a pas de 'N' dans les lignes de données
         data_lines = [l for l in lines[1:] if l.strip()]
         assert all('N' not in line for line in data_lines)
+
+
+class TestScenarioComplet:
+    """Tests de scénarios complets de jeu"""
+    
+    def test_partie_complete_joueur_gagne(self):
+        jeu = BatailleNavale(taille=5)
+        
+        # Placer un petit navire pour le joueur 2
+        jeu.grille_ordi[0][0] = 'N'
+        jeu.grille_ordi[0][1] = 'N'
+        
+        # Le joueur 1 tire et coule le navire
+        jeu.tirer(jeu.grille_ordi, jeu.tirs_joueur, 0, 0)
+        assert jeu.partie_terminee(jeu.grille_ordi) == False
+        
+        jeu.tirer(jeu.grille_ordi, jeu.tirs_joueur, 0, 1)
+        assert jeu.partie_terminee(jeu.grille_ordi) == True
+    
+    def test_tirs_alternés(self):
+        jeu = BatailleNavale(taille=5)
+        
+        # Placer des navires pour les deux joueurs
+        jeu.grille_joueur[0][0] = 'N'
+        jeu.grille_ordi[0][0] = 'N'
+        
+        # Joueur 1 tire
+        resultat_j1 = jeu.tirer(jeu.grille_ordi, jeu.tirs_joueur, 0, 0)
+        assert resultat_j1 == True
+        
+        # Joueur 2 tire
+        resultat_j2 = jeu.tirer(jeu.grille_joueur, jeu.tirs_ordi, 0, 0)
+        assert resultat_j2 == True
+        
+        # Les deux navires sont touchés
+        assert jeu.grille_joueur[0][0] == 'X'
+        assert jeu.grille_ordi[0][0] == 'X'
