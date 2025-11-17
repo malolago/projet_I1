@@ -170,3 +170,42 @@ class TestFinPartie:
         grille[0][1] = 'N'  # Un morceau de navire restant
         
         assert jeu.partie_terminee(grille) == False
+
+
+class TestAffichageGrille:
+    """Tests pour l'affichage des grilles"""
+    
+    def test_afficher_grille_sans_erreur(self, capsys):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        
+        # Ne doit pas lever d'exception
+        jeu.afficher_grille(grille)
+        
+        captured = capsys.readouterr()
+        # Vérifier qu'il y a bien un affichage
+        assert len(captured.out) > 0
+    
+    def test_afficher_grille_avec_navires(self, capsys):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille[0][0] = 'N'
+        
+        jeu.afficher_grille(grille)
+        
+        captured = capsys.readouterr()
+        assert 'N' in captured.out
+    
+    def test_afficher_grille_masquee(self, capsys):
+        jeu = BatailleNavale()
+        grille = [[' ' for _ in range(10)] for _ in range(10)]
+        grille[0][0] = 'N'
+        
+        jeu.afficher_grille(grille, masquer=True)
+        
+        captured = capsys.readouterr()
+        # Les navires ne doivent pas être visibles
+        lines = captured.out.split('\n')
+        # Vérifier qu'il n'y a pas de 'N' dans les lignes de données
+        data_lines = [l for l in lines[1:] if l.strip()]
+        assert all('N' not in line for line in data_lines)
